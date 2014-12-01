@@ -1,26 +1,28 @@
 package com.tanks.tankmasters;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Battleground implements Screen {
+public class Menu implements Screen {
 
-    Main main;
 
-    Player p;
+    private Main main;
 
-    OrthographicCamera cam;
+    private OrthographicCamera cam;
+    private String menuStr = "Press any key to start!";
 
-    public Battleground(Main m){
+    private float fW = 0, fH = 0;
+
+    public Menu(Main m){
         main = m;
-
-        p = new Player(360,620);
+        fW = Main.font.getBounds(menuStr).width;
+        fH = Main.font.getBounds(menuStr).height;
         cam = new OrthographicCamera();
         cam.setToOrtho(false,1280,720);
-
     }
 
     @Override
@@ -32,10 +34,8 @@ public class Battleground implements Screen {
         cam.update();
 
         Main.batch.begin();
-        Main.font.draw(Main.batch, "FPS:" + Gdx.graphics.getFramesPerSecond(), 0, Gdx.graphics.getHeight());
+        Main.font.draw(Main.batch,menuStr,Gdx.graphics.getWidth()/2- fW/2,Gdx.graphics.getHeight()/2-fH/2);
         Main.batch.end();
-
-        p.render(delta);
 
     }
 
@@ -66,6 +66,6 @@ public class Battleground implements Screen {
 
     @Override
     public void dispose() {
-        p.dispose();
+
     }
 }

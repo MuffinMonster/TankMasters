@@ -1,5 +1,7 @@
 package com.tanks.tankmasters;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class InputHandler implements InputProcessor {
@@ -8,11 +10,27 @@ public class InputHandler implements InputProcessor {
 
     public InputHandler(Main m){
         main = m;
-
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public boolean keyDown(int keycode) {
+
+        if(keycode == Input.Keys.ESCAPE){
+            main.setScreen(null); //Prevent rendering while disposing environment
+            Main.batch.dispose();
+            Main.font.dispose();
+            main.battleground.dispose();
+            main.close();
+            return true;
+        }
+
+        if(main.gameState == GameState.MENU){
+            Gdx.app.log("App","Switching to battlegrounds");
+            main.setGameState(GameState.PLAYING);
+            main.setScreen(main.battleground);
+        }
+
         return false;
     }
 

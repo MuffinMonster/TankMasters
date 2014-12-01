@@ -9,6 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.height = 720;
 		config.width = 1280;
+		config.title = "TankMasters";
 		new LwjglApplication(new Main(), config);
 	}
 }
