@@ -17,9 +17,9 @@ public class Battleground implements Screen {
     public Battleground(Main m){
         main = m;
 
-        p = new Player(360,620);
+        p = new Player(0,0);
         cam = new OrthographicCamera();
-        cam.setToOrtho(false,1280,720);
+        cam.setToOrtho(false,Main.WORLDSIZE_WIDTH,Main.WORLDSIZE_HEIGHT);
 
     }
 
@@ -35,8 +35,10 @@ public class Battleground implements Screen {
         Main.font.draw(Main.batch, "FPS:" + Gdx.graphics.getFramesPerSecond(), 0, Gdx.graphics.getHeight());
         Main.batch.end();
 
-        p.render(delta);
+        p.render(cam,delta);
 
+
+        Main.debugRenderer.render(Main.world,cam.projection);
     }
 
     @Override
@@ -68,4 +70,7 @@ public class Battleground implements Screen {
     public void dispose() {
         p.dispose();
     }
+
+    public Player getPlayer(){ return p; }
+
 }

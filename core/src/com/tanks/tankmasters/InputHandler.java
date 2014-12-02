@@ -3,14 +3,18 @@ package com.tanks.tankmasters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
 
 public class InputHandler implements InputProcessor {
 
     Main main;
 
+    Player p;
+
     public InputHandler(Main m){
         main = m;
         Gdx.input.setInputProcessor(this);
+        p = main.battleground.getPlayer();
     }
 
     @Override
@@ -31,11 +35,36 @@ public class InputHandler implements InputProcessor {
             main.setScreen(main.battleground);
         }
 
-        return false;
+        handlePlayerInput(keycode);
+
+        return true;
+    }
+
+    private void handlePlayerInput(int keycode) {
+
+        if(keycode == Input.Keys.A){
+            p.turnLeft();
+        }
+        if(keycode == Input.Keys.D){
+            p.turnRight();
+        }
+        if(keycode == Input.Keys.W){
+            p.moveForward();
+        }
+        if(keycode == Input.Keys.S){
+            p.moveBackward();
+        }
+
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        if(keycode == Input.Keys.A || keycode == Input.Keys.D)
+            p.resetTurn();
+        if(keycode == Input.Keys.W || keycode == Input.Keys.S)
+            p.resetMove();
+
+
         return false;
     }
 

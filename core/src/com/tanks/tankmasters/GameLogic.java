@@ -5,12 +5,14 @@ import com.badlogic.gdx.Gdx;
 public class GameLogic implements Runnable {
 
     Main main;
-
+    Battleground battleground;
+    Player player;
     static boolean running = true;
 
-    public GameLogic(Main m){
+    public GameLogic(Main m,Battleground bg){
         main = m;
-
+        battleground = bg;
+        player = battleground.getPlayer();
     }
 
     public void start(){
@@ -26,10 +28,13 @@ public class GameLogic implements Runnable {
         Gdx.app.log("App","Started GameLogic thread!");
         while(running){
 
-            Gdx.app.log("App","Loop");
+            //Quicknote: More iterations: Smoother simulation and heavier performance hit, less iterations is other way around
+            Main.world.step(1/300f,6, 2); // timestep, velocityIterations, positionIterations
+
+            player.update();
 
             try {
-                Thread.sleep((long) 0.15);
+                Thread.sleep(15L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 Gdx.app.log("WARNING","GameLogic thread was interrupted!");

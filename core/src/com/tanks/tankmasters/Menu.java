@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Menu implements Screen {
 
@@ -22,7 +20,7 @@ public class Menu implements Screen {
         fW = Main.font.getBounds(menuStr).width;
         fH = Main.font.getBounds(menuStr).height;
         cam = new OrthographicCamera();
-        cam.setToOrtho(false,1280,720);
+        cam.setToOrtho(false,Main.WORLDSIZE_WIDTH,Main.WORLDSIZE_HEIGHT);
     }
 
     @Override
