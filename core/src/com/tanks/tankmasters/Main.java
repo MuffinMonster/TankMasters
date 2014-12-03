@@ -82,13 +82,19 @@ public class Main extends Game {
 		Gdx.app.log("App","Cleaned box2d World");
 	}
 
+	// Application closing/disposing
 	public void close(){
+		Main.batch.dispose();
+		Main.font.dispose();
+		setScreen(null); //Prevent rendering while disposing environment
+		battleground.dispose();
 		stopGameL();
 		disposeWorld();
 		this.dispose();
 		Gdx.app.exit();
 	}
 
+	// Game logic thread shutdown
 	public void stopGameL(){
 		if(GameLogic.running)
 		{

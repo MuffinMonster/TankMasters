@@ -21,10 +21,7 @@ public class InputHandler implements InputProcessor {
     public boolean keyDown(int keycode) {
 
         if(keycode == Input.Keys.ESCAPE){
-            main.setScreen(null); //Prevent rendering while disposing environment
-            Main.batch.dispose();
-            Main.font.dispose();
-            main.battleground.dispose();
+            Gdx.app.log("Input","App close issued!");
             main.close();
             return true;
         }
@@ -41,17 +38,16 @@ public class InputHandler implements InputProcessor {
     }
 
     private void handlePlayerInput(int keycode) {
-
-        if(keycode == Input.Keys.A){
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
             p.turnLeft();
         }
-        if(keycode == Input.Keys.D){
+        if(Gdx.input.isKeyPressed(Input.Keys.D)){
             p.turnRight();
         }
-        if(keycode == Input.Keys.W){
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
             p.moveForward();
         }
-        if(keycode == Input.Keys.S){
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
             p.moveBackward();
         }
 
@@ -64,6 +60,7 @@ public class InputHandler implements InputProcessor {
         if(keycode == Input.Keys.W || keycode == Input.Keys.S)
             p.resetMove();
 
+        handlePlayerInput(-1);
 
         return false;
     }
@@ -90,6 +87,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        p.updateTurret((double)screenX / Gdx.graphics.getWidth(), (double)screenY / Gdx.graphics.getHeight());
         return false;
     }
 
