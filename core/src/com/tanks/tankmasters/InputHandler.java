@@ -3,7 +3,6 @@ package com.tanks.tankmasters;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
 
 public class InputHandler implements InputProcessor {
 
@@ -82,6 +81,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        p.updateTurret((double)screenX / Gdx.graphics.getWidth(), (double)screenY / Gdx.graphics.getHeight());
         return false;
     }
 
