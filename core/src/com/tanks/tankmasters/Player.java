@@ -20,8 +20,8 @@ public class Player {
     float forward = 0.0f; // (backward) -1.0f <<>> 1.0f (forward)
     float turning = 0.0f; // Same as for 'forward'
 
-    float turnSpeed = 5f; //turnspeed of the tank
-    float moveSpeed = 10000f;
+    float turnSpeed = 50f; //turnspeed of the tank
+    float moveSpeed = 30000f;
 
     //Tower/turret vars
     double towerAngle = 0;
@@ -34,7 +34,7 @@ public class Player {
     //Bullets
     private ArrayList<Body> bulletBList = new ArrayList<Body>();
     private int bulletDmg = 40;
-    private float bulletSpd = 200;
+    private float bulletSpd = 40;
     private float bulletSize = .2f;
     Texture bTex;
 
@@ -67,8 +67,8 @@ public class Player {
 
         b.createFixture(fDef);
 
-        b.setAngularDamping(45f);
-        b.setLinearDamping(35f);
+        b.setAngularDamping(7f);
+        b.setLinearDamping(13f);
 
         shape.dispose();
         Gdx.app.log("App", "Player mass: " + b.getMass()+"kg");
@@ -78,34 +78,37 @@ public class Player {
         BodyDef bDef = new BodyDef();
         bDef.type = BodyDef.BodyType.KinematicBody;
         //Add a bit of space between player and bullet to prevent self damage
-        bDef.position.set(pos.x + (float)(Math.cos(Math.toRadians(towerAngle))),
-                pos.y + (float)(Math.sin(Math.toRadians(towerAngle))));
+        bDef.position.set(pos.x -Main.WORLDSIZE_WIDTH/2 +(float)(2.2f*Math.cos(towerAngle)) +size.x/2,
+                pos.y -Main.WORLDSIZE_HEIGHT/2 +(float)(2.2f*Math.sin(towerAngle)) +size.y/2);
 
         Body tmp = Main.world.createBody(bDef);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(bulletSize,bulletSize);
 
-        tmp.createFixture(shape,0.5f);
+        FixtureDef fDef = new FixtureDef();
+        fDef.shape = shape;
+
+        tmp.createFixture(fDef);
 
         tmp.setBullet(true);
-        tmp.setLinearVelocity((float)(bulletSpd*Math.cos(Math.toRadians(towerAngle))), (float)(bulletSpd*Math.sin(Math.toRadians(towerAngle))) );
+        tmp.setLinearVelocity((float)(bulletSpd*Math.cos(towerAngle)), (float)(bulletSpd*Math.sin(towerAngle)) );
 
         bulletBList.add(tmp);
         shape.dispose();
     }
 
-    public void update(){
+    public void update(float delta){
         pos.x = b.getPosition().x + Main.WORLDSIZE_WIDTH/2 -size.x/2;
         pos.y = b.getPosition().y + Main.WORLDSIZE_HEIGHT/2 -size.y/2;
         tankDir = (float) Math.toDegrees(b.getAngle());
 
-        b.applyAngularImpulse(-turning * turnSpeed,true);
+        b.applyAngularImpulse(-turning * turnSpeed * delta,true);
 
         float xForce = (float) (forward*Math.cos(Math.toRadians(tankDir)));
         float yForce = (float) (forward*Math.sin(Math.toRadians(tankDir)));
 
-        b.applyForceToCenter(new Vector2(xForce * moveSpeed, yForce * moveSpeed),true);
+        b.applyForceToCenter(new Vector2(xForce * moveSpeed, yForce * moveSpeed).scl(delta),true);
 
         calcTowerAngle();
     }

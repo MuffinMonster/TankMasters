@@ -8,6 +8,8 @@ public class GameLogic implements Runnable {
     Battleground battleground;
     Player player;
     static boolean running = true;
+    private float deltaTime = 0;
+    private long  startTime = 0;
 
     public GameLogic(Main m,Battleground bg){
         main = m;
@@ -25,20 +27,27 @@ public class GameLogic implements Runnable {
 
     @Override
     public void run() {
+        startTime = System.currentTimeMillis();
         Gdx.app.log("App","Started GameLogic thread!");
         while(running){
 
             //Quicknote: More iterations: Smoother simulation and heavier performance hit, less iterations is other way around
-            Main.world.step(1/300f,6, 2); // timestep, velocityIterations, positionIterations
+            Main.world.step(1/45f,6, 4); // timestep, velocityIterations, positionIterations
 
-            player.update();
+            player.update(deltaTime);
 
             try {
-                Thread.sleep(15L);
+                long sleepTime = Math.max(15L + (long) Math.min((0.015f - deltaTime) * 1000f,0), 0);
+                //Gdx.app.log("App","Sleeptime:"+sleepTime);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 Gdx.app.log("WARNING","GameLogic thread was interrupted!");
             }
+
+            deltaTime = (float)(System.currentTimeMillis() - startTime)/1000f;
+            startTime = System.currentTimeMillis();
+            //Gdx.app.log("Delta",""+deltaTime+", Lps:"+(1f/deltaTime));
         }
 
     }

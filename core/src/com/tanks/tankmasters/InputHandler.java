@@ -76,9 +76,11 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        p.updateTurret((double)screenX / Gdx.graphics.getWidth(), (double)screenY / Gdx.graphics.getHeight());
-        p.fire();
-        Gdx.app.log("Input","Fired bullet!");
+        p.updateTurret((double) screenX / Gdx.graphics.getWidth(), (double) screenY / Gdx.graphics.getHeight());
+        if (main.gameState == GameState.PLAYING){
+            p.fire();
+            Gdx.app.log("Input", "Fired bullet!");
+        }
         return false;
     }
 
