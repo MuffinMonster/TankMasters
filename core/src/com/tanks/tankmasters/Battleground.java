@@ -75,7 +75,7 @@ public class Battleground implements Screen {
 
         p.render(cam,delta);
 
-        //Main.debugRenderer.render(Main.world,cam.projection);
+        Main.debugRenderer.render(Main.world,cam.projection);
     }
 
     @Override

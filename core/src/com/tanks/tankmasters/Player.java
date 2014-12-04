@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
+
+import java.util.ArrayList;
 
 public class Player {
 
@@ -30,20 +29,26 @@ public class Player {
     double mouseY = .5;
     Texture towerTex;
 
-    private ShapeRenderer renderer;
     private Body b;
 
-    //TMP
+    //Bullets
+    private ArrayList<Body> bulletBList = new ArrayList<Body>();
+    private int bulletDmg = 40;
+    private float bulletSpd = 200;
+    private float bulletSize = .2f;
+    Texture bTex;
+
+
+    //Location of player on screen in unit coords
     Vector2 scrnPos = new Vector2(0,0);
-    //
 
     public Player(int posX, int posY){
 
+        bTex = new Texture("Bullet.png");
         tankTex = new Texture("Tank.png");
         towerTex = new Texture("Tank_Tower.png");
 
         pos = new Vector2(posX,posY);
-        renderer = new ShapeRenderer();
 
         BodyDef bDef = new BodyDef();
         bDef.type = BodyDef.BodyType.DynamicBody;
@@ -69,6 +74,27 @@ public class Player {
         Gdx.app.log("App", "Player mass: " + b.getMass()+"kg");
     }
 
+    public void fire(){
+        BodyDef bDef = new BodyDef();
+        bDef.type = BodyDef.BodyType.KinematicBody;
+        //Add a bit of space between player and bullet to prevent self damage
+        bDef.position.set(pos.x + (float)(Math.cos(Math.toRadians(towerAngle))),
+                pos.y + (float)(Math.sin(Math.toRadians(towerAngle))));
+
+        Body tmp = Main.world.createBody(bDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(bulletSize,bulletSize);
+
+        tmp.createFixture(shape,0.5f);
+
+        tmp.setBullet(true);
+        tmp.setLinearVelocity((float)(bulletSpd*Math.cos(Math.toRadians(towerAngle))), (float)(bulletSpd*Math.sin(Math.toRadians(towerAngle))) );
+
+        bulletBList.add(tmp);
+        shape.dispose();
+    }
+
     public void update(){
         pos.x = b.getPosition().x + Main.WORLDSIZE_WIDTH/2 -size.x/2;
         pos.y = b.getPosition().y + Main.WORLDSIZE_HEIGHT/2 -size.y/2;
@@ -88,6 +114,29 @@ public class Player {
 
         Main.batch.setProjectionMatrix(cam.projection);
         Main.batch.begin();
+
+        for(Body b: bulletBList){
+
+            Vector2 tmpPos = b.getPosition();
+
+            Main.batch.draw(bTex,
+                    tmpPos.x - Main.WORLDSIZE_WIDTH / 2,
+                    tmpPos.y - Main.WORLDSIZE_HEIGHT / 2,
+                    bulletSize / 2,
+                    bulletSize / 2,
+                    bulletSize,
+                    bulletSize,
+                    1.0f,
+                    1.0f,
+                    (float)towerAngle,
+                    0,
+                    0,
+                    bTex.getWidth(),
+                    bTex.getHeight(),
+                    false,
+                    false);
+
+        }
         Main.batch.draw(tankTex,
                 pos.x - Main.WORLDSIZE_WIDTH / 2,
                 pos.y - Main.WORLDSIZE_HEIGHT / 2,
@@ -194,7 +243,7 @@ public class Player {
     }
 
     public void dispose(){
-        renderer.dispose();
+
     }
 
 }
